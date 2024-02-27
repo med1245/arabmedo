@@ -1,8 +1,8 @@
 {
-    "name": "Arabic providers repository",
-    "description": "Cloudstream Arabic Plugin Repository",
+    "name": "Arabmedo",
+    "description": "med rule",
     "manifestVersion": 1,
     "pluginLists": [
-      "https://codeberg.org/cloudstream/arab/raw/branch/builds/plugins.json"
+      "https://raw.githubusercontent.com/med1245/arabmedo/builds/plugins.json"
     ]
   }
