@@ -26,9 +26,7 @@ class Fushaar : MainAPI() {
         val posterUrl = select("img").attr("data-lazy-src")
         val year = select("ul.labels li.year").text()?.getIntFromText()
         var quality = select("div").first()?.attr("class")?.replace("hdd","hd")?.replace("caam","cam")
-        val titleOne = select("div.info h3").text()
-        val titleTwo = select("div.info h4").text()
-        val title = if(titleOne == titleTwo && titleOne.isNotEmpty()) titleOne else "$titleOne\n$titleTwo"
+        val title = select("div.info h3").text()+"\n"+select("div.info h4").text()
 
         return MovieSearchResponse(
             title,
@@ -55,7 +53,7 @@ class Fushaar : MainAPI() {
         "$mainUrl/gerne/family/page/"	to "Family | عائلي",
         "$mainUrl/gerne/fantasy/page/"	to "Fantasy | فنتازيا",
         "$mainUrl/gerne/herror/page/" to "Herror | رعب",
-        "$mainUrl/gerne/history/page/" to "History | تاريخي",
+        "$mainUrl/gerne/history/page/" to "History |تاريخي",
         "$mainUrl/gerne/music/page/" to "Music | موسيقى",
         "$mainUrl/gerne/musical/page/" to "Musical | موسيقي",
         "$mainUrl/gerne/mystery/page/" to "Mystery | غموض",
@@ -86,12 +84,9 @@ class Fushaar : MainAPI() {
 
     override suspend fun load(url: String): LoadResponse {
         var doc = app.get(url).document
-        val bigPoster = doc.select("""meta[property="og:image"]""").attr("content")
-        val posterUrl = bigPoster.ifEmpty() { doc.select("figure.poster noscript img").attr("src")}
+        val posterUrl = doc.select("figure.poster noscript img").attr("src")
         val year = doc.select("header span.yearz").text()?.getIntFromText()
-        val ARtitle = doc.select("header h1").text()
-        val ENtitle = doc.select("header h2").text()
-        val title = if( ARtitle.isNotEmpty() && ENtitle.isNotEmpty() ) "$ARtitle | $ENtitle"  else if(ARtitle == ENtitle) ARtitle else "$ARtitle$ENtitle"
+        val title = doc.select("header h1").text()+" | "+doc.select("header h2").text()
         val synopsis = doc.select("div.postz").text()
         val trailer = doc.select("#new-stream > div > div.ytb > a").attr("href")
         val tags = doc.select("div.zoomInUp  a").map{it.text()}//doc.select("li.iifo").map { it.select("span.z-s-i").text()+" "+it.select("h8").text() }
@@ -124,13 +119,13 @@ class Fushaar : MainAPI() {
         callback: (ExtractorLink) -> Unit
     ): Boolean {
         val doc = app.get(data).document
-        var sourceUrl = doc.select("div:nth-child(3) > div > iframe,div:nth-child(4) > div > iframe").attr("data-lazy-src")
+        var sourceUrl = doc.select("div:nth-child(10) > a").attr("href")
         loadExtractor(sourceUrl, data, subtitleCallback, callback)
             doc.select("#fancyboxID-download > center > a:nth-child(n+19),#fancyboxID-1 > center > a:nth-child(n+16)").map {
                 callback.invoke(
                     ExtractorLink(
                         source = this.name,
-                        name = it.text() ?: name,
+                        name = name,
                         url = it.attr("href"),
                         referer = this.mainUrl,
                         quality = it.text().getIntFromText() ?: Qualities.Unknown.value,

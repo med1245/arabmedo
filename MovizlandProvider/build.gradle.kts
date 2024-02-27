@@ -1,4 +1,4 @@
-version = 5
+version = 3
 
 cloudstream {
     description = "Not recommended for series."
@@ -8,7 +8,7 @@ cloudstream {
 
     status = 1
 
-    tvTypes = listOf( "TvSeries" , "Movie" , "Anime" , "AsianDrama" )
+    tvTypes = listOf( "Movie" )
 
-    iconUrl = "https://www.google.com/s2/favicons?domain=movizland.online&sz=%size%"
+    iconUrl = "https://www.google.com/s2/favicons?domain=movizland.cyou&sz=%size%"
 }
